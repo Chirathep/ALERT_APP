@@ -1,37 +1,52 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_alert/views/login_ui.dart';
+import 'package:flutter_app_alert/net/flutterfire.dart';
+import 'package:flutter_app_alert/net/user_model.dart';
+import 'package:flutter_app_alert/views/main/main_home_ui.dart';
 
 class Register2UI extends StatefulWidget {
   const Register2UI({Key? key}) : super(key: key);
 
   @override
-  _Register2UIState createState() => _Register2UIState();
+  State<Register2UI> createState() => _Register2UIState();
 }
 
 class _Register2UIState extends State<Register2UI> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _name = TextEditingController();
+  TextEditingController _tel = TextEditingController();
+  String? name;
+  String? tel;
   DateTime date = DateTime(2022, 12, 24);
+  final auth = FirebaseAuth.instance;
+  AuthClass authClass = AuthClass();
+  submit() {
+    _formKey.currentState?.save();
+    Navigator.pop(context, {'name': name, 'date': date, 'tel': tel});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(' '),
-          centerTitle: true,
-          backgroundColor: Colors.grey[50],
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new),
-            //คำสั่งกลับไปหน้าก่อนหน้า
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            color: Colors.black,
-          ),
-        ),
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(' '),
+        centerTitle: true,
         backgroundColor: Colors.grey[50],
-        body: SingleChildScrollView(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new),
+          //คำสั่งกลับไปหน้าก่อนหน้า
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          color: Colors.black,
+        ),
+      ),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SingleChildScrollView(
           child: Center(
             child: Column(
               children: [
@@ -39,18 +54,18 @@ class _Register2UIState extends State<Register2UI> {
                   height: MediaQuery.of(context).size.height * 0.02,
                 ),
                 Text(
-                  'User Details',
+                  'สร้างบัญชีผู้ใช้',
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.01,
+                  height: MediaQuery.of(context).size.height * 0.001,
                 ),
                 Text(
-                  'รายละเอียดผู้ใช้',
+                  'กรุณากรอกข้อมูลให้ครบถ้วน',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -59,7 +74,6 @@ class _Register2UIState extends State<Register2UI> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.025,
                 ),
-                //birthday picker
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -68,9 +82,13 @@ class _Register2UIState extends State<Register2UI> {
                       decoration: BoxDecoration(
                         color: Colors.grey[50],
                       ),
-                      child: TextField(
+                      child: TextFormField(
+                        //onsave
+                        onSaved: ((val) => name = val),
+                        controller: _name,
+                        keyboardType: TextInputType.text,
                         decoration: InputDecoration(
-                          labelText: 'Username',
+                          labelText: 'ชื่อ  ',
                           labelStyle: TextStyle(
                             color: Colors.grey,
                           ),
@@ -86,7 +104,7 @@ class _Register2UIState extends State<Register2UI> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Birthday',
+                      'วันเกิด',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
@@ -96,7 +114,7 @@ class _Register2UIState extends State<Register2UI> {
                       width: MediaQuery.of(context).size.width * 0.05,
                     ),
                     Text(
-                      '${date.year}/${date.month}/${date.day}',
+                      '${date.day}/${date.month}/${date.year}',
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.05,
@@ -105,7 +123,7 @@ class _Register2UIState extends State<Register2UI> {
                       width: 0,
                     ),
                     ElevatedButton(
-                      child: Text('Select Date'),
+                      child: Text('เลือกวันเกิด'),
                       onPressed: () async {
                         DateTime? newDate = await showDatePicker(
                           context: context,
@@ -115,7 +133,6 @@ class _Register2UIState extends State<Register2UI> {
                         );
                         //'cancel' => null
                         if (newDate == null) return;
-                        //'ok => Datetime'
                         setState(() => date = newDate);
                       },
                       style: ElevatedButton.styleFrom(
@@ -127,7 +144,6 @@ class _Register2UIState extends State<Register2UI> {
                     )
                   ],
                 ),
-
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.01,
                 ),
@@ -140,10 +156,12 @@ class _Register2UIState extends State<Register2UI> {
                       decoration: BoxDecoration(
                         color: Colors.grey[50],
                       ),
-                      child: TextField(
+                      child: TextFormField(
                         keyboardType: TextInputType.number,
+                        onSaved: ((val) => tel = val),
+                        controller: _tel,
                         decoration: InputDecoration(
-                          labelText: 'Tel',
+                          labelText: 'เบอร์โทรศัพท์',
                           labelStyle: TextStyle(
                             color: Colors.grey,
                           ),
@@ -153,19 +171,19 @@ class _Register2UIState extends State<Register2UI> {
                   ],
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.12,
+                  height: MediaQuery.of(context).size.height * 0.05,
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginUI(),
-                      ),
-                    );
+                  onPressed: () async {
+                    await submit();
+                    postDetailToFirestoreGmail();
+
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MainHomeUI()));
                   },
+                  //Next btn
                   child: Text(
-                    'Finish',
+                    'ยืนยัน',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -182,45 +200,34 @@ class _Register2UIState extends State<Register2UI> {
                     primary: Color(0xff39b54a),
                   ),
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account?  ',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginUI(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Login Here',
-                        style: TextStyle(
-                          fontFamily: 'Kanit',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  postDetailToFirestoreGmail() async {
+    //call firestore
+    //call userModel
+    //sending values
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = auth.currentUser;
+    UserModel userModel = UserModel();
+    //weritting all values
+    userModel.uid = user?.uid;
+    userModel.name = _name.text;
+    userModel.tel = _tel.text;
+    userModel.birthday = '${date.year}/${date.month}/${date.day}';
+    userModel.email = user?.email;
+
+    //send to firestore
+    await firebaseFirestore
+        .collection('users')
+        .doc(user?.uid)
+        .set(userModel.toMap())
+        .then((value) => print('User.added'))
+        .catchError((error) => print('Failed to add user: $error'));
   }
 }

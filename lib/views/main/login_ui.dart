@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app_alert/net/flutterfire.dart';
-import 'package:flutter_app_alert/views/main_home_ui.dart';
-import 'package:flutter_app_alert/views/register_1_ui.dart';
+import 'package:flutter_app_alert/views/main/main_home_ui.dart';
+import 'package:flutter_app_alert/views/main/register_ui.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -17,8 +17,6 @@ class LoginUI extends StatefulWidget {
 }
 
 class _LoginUIState extends State<LoginUI> {
-  String? displayName;
-
   @override
   void initState() {
     // ignore: todo
@@ -27,15 +25,7 @@ class _LoginUIState extends State<LoginUI> {
     // findDisplayName();
   }
 
-  // Future findDisplayName() async {
-  //   await Firebase.initializeApp().then((value) async {
-  //     await FirebaseAuth.instance.authStateChanges().listen((event) {
-  //       displayName = event?.displayName;
-  //       print('##### displayName=$DisplayName');
-  //     });
-  //   });
-  // }
-
+  final _formkey = GlobalKey<FormState>();
   //
   final storage = FlutterSecureStorage();
   //
@@ -48,8 +38,7 @@ class _LoginUIState extends State<LoginUI> {
 //
   bool _isObscure = true;
 //
-//_formkey
-  // final GlobalKey<FormState> _formkey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -108,13 +97,9 @@ class _LoginUIState extends State<LoginUI> {
                         color: Colors.grey[50],
                       ),
                       child: TextField(
+                        key: _formkey,
                         keyboardType: TextInputType.emailAddress,
                         controller: _email,
-                        // onChanged: (value) {
-                        //   setState(() {
-                        //     _email = value.trim();
-                        //   });
-                        // },
                         decoration: InputDecoration(
                           prefixIcon: Icon(
                             Icons.email,
@@ -141,11 +126,6 @@ class _LoginUIState extends State<LoginUI> {
                         obscureText: _isObscure,
                         keyboardType: TextInputType.text,
                         controller: _password,
-                        // onChanged: (value) {
-                        //   setState(() {
-                        //     _password = value.trim();
-                        //   });
-                        // },
                         decoration: InputDecoration(
                           prefixIcon: Icon(
                             FontAwesomeIcons.key,

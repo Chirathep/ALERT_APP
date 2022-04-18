@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_alert/net/flutterfire.dart';
-import 'package:flutter_app_alert/views/content_home_ui.dart';
-import 'package:flutter_app_alert/views/content_law_ui.dart';
-import 'package:flutter_app_alert/views/content_location_ui.dart';
-import 'package:flutter_app_alert/views/content_news_ui.dart';
-import 'package:flutter_app_alert/views/content_user_ui.dart';
+import 'package:flutter_app_alert/views/home/content_home_ui.dart';
+import 'package:flutter_app_alert/views/law/content_law_ui.dart';
+import 'package:flutter_app_alert/views/map/content_location_ui.dart';
+import 'package:flutter_app_alert/views/social/content_social_ui.dart';
+import 'package:flutter_app_alert/views/user/content_user_ui.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -25,7 +25,7 @@ class _ContentHomeUIState extends State<MainHomeUI> {
 
   final Screens = [
     HomeUI(),
-    NewsUI(),
+    SocialUI(),
     LocatUI(),
     LawUI(),
     UserUI(),
@@ -38,33 +38,13 @@ class _ContentHomeUIState extends State<MainHomeUI> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-        appBar: AppBar(
-          leadingWidth: 0,
-          elevation: 0,
-          title: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Image.asset(
-                  'assets/images/alertlogo.png',
-                  width: 85,
-                ),
-              ],
-            ),
-          ),
-          // actions: [
-          //   IconButton(
-          //     onPressed: () {},
-          //     icon: Icon(Icons.search),
-          //     color: Colors.grey,
-          //   ),
-          // ],
-          backgroundColor: Colors.grey[50],
-        ),
         body: Screens[currentIndex],
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentIndex,
+          selectedItemColor: Color.fromARGB(255, 0, 133, 241),
+          unselectedItemColor: Color.fromARGB(255, 143, 143, 143),
           elevation: 0,
+          enableFeedback: true,
           onTap: (index) => setState(() => currentIndex = index),
           backgroundColor: Colors.grey[50],
           type: BottomNavigationBarType.fixed,
@@ -75,7 +55,6 @@ class _ContentHomeUIState extends State<MainHomeUI> {
               backgroundColor: Colors.blue,
             ),
             BottomNavigationBarItem(
-              //fontawesome
               icon: Icon(FontAwesomeIcons.solidHeart),
               label: 'สังคม',
               backgroundColor: Colors.green,

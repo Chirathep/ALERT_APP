@@ -3,34 +3,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_alert/views/index.dart';
-import 'package:flutter_app_alert/views/main_home_ui.dart';
+import 'package:flutter_app_alert/views/main/index.dart';
+import 'package:flutter_app_alert/views/main/main_home_ui.dart';
+import 'package:flutter_app_alert/views/main/register_ui2.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 ////
-TextEditingController _email = TextEditingController();
-TextEditingController _password = TextEditingController();
+
+final usersRef = FirebaseFirestore.instance.collection('users');
+final storage = FlutterSecureStorage();
+
+FirebaseAuth auth = FirebaseAuth.instance;
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ],
+);
 
 class AuthClass {
-  final storage = FlutterSecureStorage();
-  FirebaseAuth auth = FirebaseAuth.instance;
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email',
-      'https://www.googleapis.com/auth/contacts.readonly',
-    ],
-  );
   Future googleSignIn(BuildContext context) async {
     try {
       GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
       if (googleSignInAccount != null) {
         GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
-
         AuthCredential credential = GoogleAuthProvider.credential(
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken,
@@ -43,6 +43,8 @@ class AuthClass {
             await _googleSignIn.signIn().then((value) async {
               String? name = value?.displayName;
               String? email = value?.email;
+              String? photoUrl = value?.photoUrl;
+              String? uid = value?.id;
               await value?.authentication.then((value2) async {
                 AuthCredential authCredential = GoogleAuthProvider.credential(
                   idToken: value2.idToken,
@@ -56,7 +58,33 @@ class AuthClass {
                 });
               });
             });
+          }, onError: (err) {
+            print('Error: $err');
           });
+          User? user = FirebaseAuth.instance.currentUser;
+          var obtainedName = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user!.uid)
+              .get()
+              .then((value) {
+            return value.data()?['name'];
+          });
+          print('Obtained name: $obtainedName');
+          if (obtainedName != null) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MainHomeUI(),
+              ),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Register2UI(),
+              ),
+            );
+          }
           Fluttertoast.showToast(
               msg: "เข้าสู่ระบบสำเร็จ",
               toastLength: Toast.LENGTH_SHORT,
@@ -65,24 +93,25 @@ class AuthClass {
               backgroundColor: Color.fromARGB(255, 201, 201, 201),
               textColor: Color.fromARGB(255, 43, 43, 43),
               fontSize: 16.0);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => MainHomeUI()),
-              result: (route) => false);
-        } catch (e) {}
+        } catch (e) {
+          print(e);
+          Fluttertoast.showToast(
+              msg: "ไม่สามารถเข้าสู่ระบบได้",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color.fromARGB(255, 236, 116, 114),
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
       } else {
-        Fluttertoast.showToast(
-            msg: "ไม่สามารถเข้าสู่ระบบได้",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Color.fromARGB(255, 236, 116, 114),
-            textColor: Colors.white,
-            fontSize: 16.0);
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => IndexUI()),
-            result: (route) => true);
+        print('Google Sign In failed');
       }
-    } catch (e) {}
+    } catch (e) {
+      Navigator.pop(
+          context, MaterialPageRoute(builder: (context) => IndexUI()));
+      print(e);
+    }
   }
 
   Future storeTokenAndData(UserCredential userCredential) async {
@@ -124,7 +153,7 @@ Future<bool> login(String email, String password) async {
         fontSize: 16.0);
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
-    sharedPreferences.setString('email', _email.text);
+    sharedPreferences.setString('email', email);
     return true;
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
@@ -168,7 +197,6 @@ Future<bool> register(String email, String password) async {
         .then((respose) {
       print('Register Success = $email');
     });
-    // await DatabaseService(uid: email)updateUserData ;
     Fluttertoast.showToast(
         msg: " สมัครสมาชิกสำเร็จ",
         toastLength: Toast.LENGTH_SHORT,
@@ -177,7 +205,7 @@ Future<bool> register(String email, String password) async {
         backgroundColor: Color.fromARGB(255, 187, 241, 191),
         textColor: Colors.black,
         fontSize: 16.0);
-    // setupDisplayName();
+
     return true;
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
@@ -211,28 +239,3 @@ Future<bool> register(String email, String password) async {
     return false;
   }
 }
-
-class DatabaseService {
-  final String? uid;
-  DatabaseService({this.uid});
-  //collection reference
-  final CollectionReference userCollection =
-      FirebaseFirestore.instance.collection('users');
-  Future updateUserData(String uid, String name, String email, String tel,
-      String password) async {
-    return await userCollection.doc(uid).set({
-      'uid': uid,
-      'name': name,
-      'email': email,
-      'tel': tel,
-      'password': password,
-    });
-  }
-}
-// Future<void> setupDisplayName() async {
-//   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-//   await firebaseAuth.currentUser().then((response) {
-//     UserUpdateInfo userUpdateInfo = UserUpdateInfo();
-//     userUpdateInfo.displayName = name;
-//   });
-// }

@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_app_alert/net/flutterfire.dart';
-import 'package:flutter_app_alert/views/main_home_ui.dart';
-import 'package:flutter_app_alert/views/index.dart';
+import 'package:flutter_app_alert/net/user_model.dart';
+import 'package:flutter_app_alert/views/main/main_home_ui.dart';
+import 'package:flutter_app_alert/views/main/index.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,8 +26,7 @@ class MyApp extends StatefulWidget {
 
 //
 String? finalEmail;
-String login = '...';
-String? displayName;
+String? finalName;
 
 //
 class _MyAppState extends State<MyApp> {
@@ -38,18 +37,18 @@ class _MyAppState extends State<MyApp> {
   //
   Widget currentPage = IndexUI();
   AuthClass authClass = AuthClass();
+  UserModel loggedInUser = UserModel();
   //
   @override
   void initState() {
+    // authClass.logout();
     super.initState();
     checkLoginEmail();
     checkLoginGmail();
-    findDisplayname();
   }
 
   Future<void> findDisplayname() async {
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
     print('login = $login');
   }
 
@@ -73,16 +72,19 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-//
+//chack data
+
   void checkLoginGmail() async {
     String? token = await authClass.getToken();
     if (token != null) {
       setState(() {
         currentPage = MainHomeUI();
       });
+      print(token);
     }
-    print(token);
   }
+
+  //createuser in firestore
 
   @override
   Widget build(BuildContext context) {

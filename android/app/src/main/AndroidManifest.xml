@@ -4,6 +4,11 @@
         android:label="flutter_app_project_alert"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
+
+        <!-- add API GOOGLE MAP -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA_22WeNZRV9beZpdF6WGr81VgbmuAwrrY"/>
+            
         <activity
             android:name=".MainActivity"
             android:exported="true"

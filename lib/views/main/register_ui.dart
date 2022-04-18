@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_alert/net/flutterfire.dart';
-import 'package:flutter_app_alert/views/login_ui.dart';
+import 'package:flutter_app_alert/net/user_model.dart';
+import 'package:flutter_app_alert/views/main/login_ui.dart';
 
 class Register1UI extends StatefulWidget {
   const Register1UI({Key? key}) : super(key: key);
@@ -24,19 +25,11 @@ class _Register1UIState extends State<Register1UI> {
   bool _isObscure = true;
 //
   DateTime date = DateTime(2022, 12, 24);
+
 //
 
-  // final _formKey = GlobalKey<FormState>();
-  // String? name, email, birthDate, tel, password;
-  // var name = '';
-  // var email = '';
-  // var password = '';
-  // var birthDate = '';
-  // var tel = '';
-  //
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -92,8 +85,18 @@ class _Register1UIState extends State<Register1UI> {
                       decoration: BoxDecoration(
                         color: Colors.grey[50],
                       ),
-                      child: TextField(
+                      child: TextFormField(
                         //onsave
+                        validator: (value) {
+                          RegExp regExp = new RegExp(r'^.{3,}$');
+                          if (value!.isEmpty) {
+                            return ("กรุณากรอกชื่อผู้ใช้");
+                          }
+                          if (!regExp.hasMatch(value)) {
+                            return ("กรุณากรอกชื่อผู้ใช้อย่างน้อย 3 ตัวอักษร");
+                          }
+                          return null;
+                        },
                         keyboardType: TextInputType.emailAddress,
                         controller: _email,
                         decoration: InputDecoration(
@@ -106,47 +109,6 @@ class _Register1UIState extends State<Register1UI> {
                     ),
                   ],
                 ),
-
-                // Form(
-                //   key: _formKey,
-                //   child: Column(
-                //     crossAxisAlignment: CrossAxisAlignment.center,
-                //     children: <Widget>[
-                //       TextFormField(
-                //         decoration: const InputDecoration(
-                //           icon: Icon(Icons.person),
-                //           hintText: 'ชื่อ',
-                //           labelText: 'ชื่อ',
-                //         ),
-                //         onChanged: (value) {
-                //           _name = value as TextEditingController;
-                //         },
-                //         validator: (value) {
-                //           if (value == null || value.isEmpty) {
-                //             return 'กรุณากรอกชื่อ';
-                //           }
-                //           return null;
-                //         },
-                //       ),
-                //       TextFormField(
-                //         decoration: const InputDecoration(
-                //           icon: Icon(Icons.email),
-                //           hintText: 'อีเมล',
-                //           labelText: 'อีเมล',
-                //         ),
-                //         onChanged: (value) {
-                //           _email = value as TextEditingController;
-                //         },
-                //         validator: (value) {
-                //           if (value == null || value.isEmpty) {
-                //             return 'กรุณากรอกอีเมล';
-                //           }
-                //           return null;
-                //         },
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.025,
                 ),
@@ -160,7 +122,7 @@ class _Register1UIState extends State<Register1UI> {
                       ),
                       child: TextFormField(
                         //onsave
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.text,
                         controller: _name,
                         decoration: InputDecoration(
                           labelText: 'ชื่อ  ',
@@ -189,7 +151,7 @@ class _Register1UIState extends State<Register1UI> {
                       width: MediaQuery.of(context).size.width * 0.05,
                     ),
                     Text(
-                      '${date.year}/${date.month}/${date.day}',
+                      '${date.day}/${date.month}/${date.year}',
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.05,
@@ -289,25 +251,9 @@ class _Register1UIState extends State<Register1UI> {
                     print('####################################');
                     bool shouldNavigate =
                         await register(_email.text, _password.text);
-                    // if (_formKey.currentState!()) {
-                    //   _formKey.currentState?.save();
-                    //   print(
-                    //       'email : $_email , password : $_password , name : $_name');
-                    // }
                     if (shouldNavigate) {
-                      users
-                          .add({
-                            'name': _name.text,
-                            'email': _email.text,
-                            'tel': _tel.text,
-                            'password': _password.text,
-                            'birthday':
-                                '${date.year}/${date.month}/${date.day}',
-                          })
-                          .then((value) => print('User.added'))
-                          .catchError(
-                              (error) => print('Failed to add user: $error'));
-                      Navigator.push(
+                      postDetailToFirestore();
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => LoginUI(),
@@ -370,7 +316,7 @@ class _Register1UIState extends State<Register1UI> {
                   ],
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.03,
+                  height: MediaQuery.of(context).size.height * 0.1,
                 ),
                 //google login button
               ],
@@ -379,5 +325,31 @@ class _Register1UIState extends State<Register1UI> {
         ),
       ),
     );
+  }
+
+  postDetailToFirestore() async {
+    //call firestore
+    //call userModel
+    //sending values
+
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = auth.currentUser;
+    UserModel userModel = UserModel();
+    //weritting all values
+    userModel.email = user!.email;
+    userModel.uid = user.uid;
+    userModel.name = _name.text;
+    userModel.tel = _tel.text;
+    userModel.birthday = '${date.year}/${date.month}/${date.day}';
+    userModel.password = _password.text;
+    //admin set boolean to false in database
+
+    //sending to firestore
+    await firebaseFirestore
+        .collection('users')
+        .doc(user.uid)
+        .set(userModel.toMap())
+        .then((value) => print('User.added'))
+        .catchError((error) => print('Failed to add user: $error'));
   }
 }

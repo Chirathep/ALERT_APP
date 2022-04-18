@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_alert/net/flutterfire.dart';
-import 'package:flutter_app_alert/views/login_ui.dart';
-import 'package:flutter_app_alert/views/register_1_ui.dart';
+import 'package:flutter_app_alert/views/main/login_ui.dart';
+import 'package:flutter_app_alert/views/main/register_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class IndexUI extends StatefulWidget {
@@ -114,7 +114,6 @@ class _HomeUIState extends State<IndexUI> {
             ),
             ElevatedButton.icon(
               onPressed: () async {
-                authClass.googleSignIn(context);
                 await authClass.googleSignIn(context);
               },
               icon: Icon(
