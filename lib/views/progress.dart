@@ -12,7 +12,7 @@ circularProgress() {
   );
 }
 
-LinearProgress() {
+linearProgress() {
   return Container(
     padding: EdgeInsets.only(bottom: 10.0),
     child: LinearProgressIndicator(

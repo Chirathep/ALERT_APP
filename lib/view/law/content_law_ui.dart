@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_alert/net/flutterfire.dart';
+import 'package:flutter_app_alert/net/user_model.dart';
 import 'package:flutter_app_alert/views/main/index.dart';
 import 'package:flutter_app_alert/views/main/register_ui2.dart';
+import 'package:flutter_app_alert/views/social/upload.dart';
 
 class LawUI extends StatefulWidget {
   const LawUI({Key? key}) : super(key: key);
@@ -11,7 +14,11 @@ class LawUI extends StatefulWidget {
 }
 
 class _LawUIState extends State<LawUI> {
-  int currentIndex = 3;
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel userModel = UserModel();
+  // int currentIndex = 3;
+  //image
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,13 +35,24 @@ class _LawUIState extends State<LawUI> {
                 width: 85,
               ),
               ElevatedButton(
-                child: Text('ออกจากระบบ'),
+                child: Text('ออกจากsะบบ'),
                 onPressed: () async {
                   await AuthClass().logout();
                   {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => IndexUI()),
+                    );
+                  }
+                },
+              ),
+              ElevatedButton(
+                child: Text('upload'),
+                onPressed: () {
+                  {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Upload()),
                     );
                   }
                 },
@@ -54,6 +72,24 @@ class _LawUIState extends State<LawUI> {
           ),
         ),
         backgroundColor: Colors.grey[50],
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              ListBody(
+                children: [
+                  Text(
+                    "Welcome",
+                  ),
+                  Text(
+                    "to",
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -78,7 +78,7 @@ class AuthClass {
               ),
             );
           } else {
-            Navigator.pushReplacement(
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => Register2UI(),

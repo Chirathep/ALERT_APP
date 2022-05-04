@@ -20,11 +20,14 @@ class _HomeUIState extends State<HomeUI> {
       backgroundColor: Colors.cyan,
       appBar: AppBar(
         leadingWidth: 0,
-        elevation: 0,
+        elevation: 1,
         title: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              SizedBox(
+                width: 20,
+              ),
               Image.asset(
                 'assets/images/alertlogo.png',
                 width: 85,
@@ -56,12 +59,12 @@ class _HomeUIState extends State<HomeUI> {
 }
 
 final List<String> imgList = [
-  'https://as2.ftcdn.net/v2/jpg/00/68/93/99/1000_F_68939938_1ORDlfCxDBFwEMQPRcc2TVf8TY8HUExL.jpg',
-  'https://as1.ftcdn.net/v2/jpg/01/10/29/28/1000_F_110292817_GmAFbu8urNF2rDYSNE8NxZSgecLW3htA.jpg',
-  'https://as2.ftcdn.net/v2/jpg/00/61/91/61/1000_F_61916143_GBXXmWvNntZvzzJd5rIbW8QGLQY7yj25.jpg',
-  'https://as2.ftcdn.net/v2/jpg/00/75/42/37/1000_F_75423712_BoZELHCJ6RimxwKRxxDi3txoJG7zp2Wr.jpg',
-  'https://as2.ftcdn.net/v2/jpg/00/84/36/91/1000_F_84369125_kjr518mHczYWcHcXW4ft8bDjKU96z6ja.jpg',
-  'https://as2.ftcdn.net/v2/jpg/01/04/04/09/1000_F_104040956_hzyHsnILfYpBNnZqr3NBXJ3gJinbbwV8.jpg'
+  // 'https://as2.ftcdn.net/v2/jpg/00/68/93/99/1000_F_68939938_1ORDlfCxDBFwEMQPRcc2TVf8TY8HUExL.jpg',
+  // 'https://as1.ftcdn.net/v2/jpg/01/10/29/28/1000_F_110292817_GmAFbu8urNF2rDYSNE8NxZSgecLW3htA.jpg',
+  // 'https://as2.ftcdn.net/v2/jpg/00/61/91/61/1000_F_61916143_GBXXmWvNntZvzzJd5rIbW8QGLQY7yj25.jpg',
+  // 'https://as2.ftcdn.net/v2/jpg/00/75/42/37/1000_F_75423712_BoZELHCJ6RimxwKRxxDi3txoJG7zp2Wr.jpg',
+  // 'https://as2.ftcdn.net/v2/jpg/00/84/36/91/1000_F_84369125_kjr518mHczYWcHcXW4ft8bDjKU96z6ja.jpg',
+  // 'https://as2.ftcdn.net/v2/jpg/01/04/04/09/1000_F_104040956_hzyHsnILfYpBNnZqr3NBXJ3gJinbbwV8.jpg'
 ];
 final List<Widget> imageSliders = imgList
     .map((item) => Container(
@@ -71,6 +74,7 @@ final List<Widget> imageSliders = imgList
               borderRadius: BorderRadius.all(Radius.circular(5.0)),
               child: Stack(
                 children: <Widget>[
+                  Divider(),
                   Image.network(item, fit: BoxFit.cover, width: 1000.0),
                   Positioned(
                     bottom: 0.0,

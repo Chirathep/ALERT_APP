@@ -19,7 +19,6 @@ main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -33,6 +32,7 @@ class _MyAppState extends State<MyApp> {
   //username sync Email
   final Stream<QuerySnapshot> users =
       FirebaseFirestore.instance.collection('users').snapshots();
+
   //private FirebaseAuth
   //
   Widget currentPage = IndexUI();
@@ -56,6 +56,7 @@ class _MyAppState extends State<MyApp> {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     var obtainedEmail = sharedPreferences.getString('email');
+
     setState(() {
       finalEmail = obtainedEmail;
     });
@@ -73,7 +74,6 @@ class _MyAppState extends State<MyApp> {
   }
 
 //chack data
-
   void checkLoginGmail() async {
     String? token = await authClass.getToken();
     if (token != null) {
@@ -85,7 +85,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   //createuser in firestore
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

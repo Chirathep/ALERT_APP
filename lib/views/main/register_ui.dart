@@ -87,15 +87,18 @@ class _Register1UIState extends State<Register1UI> {
                       ),
                       child: TextFormField(
                         //onsave
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          RegExp regExp = new RegExp(r'^.{3,}$');
+                          //email validate
                           if (value!.isEmpty) {
-                            return ("กรุณากรอกชื่อผู้ใช้");
+                            return 'กรุณากรอกอีเมล';
+                          } else if (!value.contains('@')) {
+                            return 'กรุณากรอกอีเมลให้ถูกต้อง';
+                          } else if (!value.contains('.')) {
+                            return 'กรุณากรอกอีเมลให้ถูกต้อง';
+                          } else {
+                            return null;
                           }
-                          if (!regExp.hasMatch(value)) {
-                            return ("กรุณากรอกชื่อผู้ใช้อย่างน้อย 3 ตัวอักษร");
-                          }
-                          return null;
                         },
                         keyboardType: TextInputType.emailAddress,
                         controller: _email,
@@ -122,6 +125,21 @@ class _Register1UIState extends State<Register1UI> {
                       ),
                       child: TextFormField(
                         //onsave
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'กรุณากรอกชื่อ';
+                          } else if (value.trim().length < 3 || value.isEmpty) {
+                            return 'ชื่อต้องมีความยาวอย่างน้อย 3 ตัวอักษร';
+                          } else if (value.trim().length > 20) {
+                            return 'ชื่อต้องมีความยาวไม่เกิน 20 ตัวอักษร';
+                          } else if (!RegExp(r'^[a-zA-Zก-๙0-9@_]*$')
+                              .hasMatch(value)) {
+                            return 'ชื่อต้องเป็นภาษาไทยหรือภาษาอังกฤษ';
+                          } else {
+                            return null;
+                          }
+                        },
                         keyboardType: TextInputType.text,
                         controller: _name,
                         decoration: InputDecoration(
@@ -195,7 +213,20 @@ class _Register1UIState extends State<Register1UI> {
                       decoration: BoxDecoration(
                         color: Colors.grey[50],
                       ),
-                      child: TextField(
+                      child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'กรุณากรอกเบอร์โทรศัพท์';
+                          } else if (value.trim().length < 10 ||
+                              value.isEmpty) {
+                            return 'เบอร์โทรศัพท์ต้องมีความยาว 10 ตัวอักษร';
+                          } else if (value.trim().length > 10) {
+                            return 'เบอร์โทรศัพท์ต้องมีความยาวไม่เกิน 10 ตัว';
+                          } else {
+                            return null;
+                          }
+                        },
                         keyboardType: TextInputType.number,
                         controller: _tel,
                         decoration: InputDecoration(
@@ -219,6 +250,14 @@ class _Register1UIState extends State<Register1UI> {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.75,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'กรุณากรอกเบอร์โทรศัพท์';
+                          } else {
+                            return null;
+                          }
+                        },
                         obscureText: _isObscure,
                         controller: _password,
                         decoration: InputDecoration(
@@ -248,7 +287,6 @@ class _Register1UIState extends State<Register1UI> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    print('####################################');
                     bool shouldNavigate =
                         await register(_email.text, _password.text);
                     if (shouldNavigate) {
@@ -328,10 +366,6 @@ class _Register1UIState extends State<Register1UI> {
   }
 
   postDetailToFirestore() async {
-    //call firestore
-    //call userModel
-    //sending values
-
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = auth.currentUser;
     UserModel userModel = UserModel();
@@ -339,10 +373,11 @@ class _Register1UIState extends State<Register1UI> {
     userModel.email = user!.email;
     userModel.uid = user.uid;
     userModel.name = _name.text;
+    userModel.photoURL =
+        'https://firebasestorage.googleapis.com/v0/b/flutter-alert-app.appspot.com/o/profile-icon.png?alt=media&token=da62b0f2-0f43-4530-8934-db7bf423aeb5';
     userModel.tel = _tel.text;
     userModel.birthday = '${date.year}/${date.month}/${date.day}';
     userModel.password = _password.text;
-    //admin set boolean to false in database
 
     //sending to firestore
     await firebaseFirestore
