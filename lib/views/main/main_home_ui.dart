@@ -54,11 +54,6 @@ class _ContentHomeUIState extends State<MainHomeUI> {
           backgroundColor: Colors.grey[50],
           type: BottomNavigationBarType.fixed,
           items: [
-            // BottomNavigationBarItem(
-            //   icon: Icon(Icons.home),
-            //   label: 'หน้าหลัก',
-            //   backgroundColor: Colors.blue,
-            // ),
             BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.solidHeart),
               label: 'ไทม์ไลน์',
@@ -69,11 +64,6 @@ class _ContentHomeUIState extends State<MainHomeUI> {
               label: 'แผนที่',
               backgroundColor: Colors.orange,
             ),
-            // BottomNavigationBarItem(
-            //   icon: Icon(FontAwesomeIcons.gavel),
-            //   label: 'กฏหมาย',
-            //   backgroundColor: Colors.brown[600],
-            // ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'ผู้ใช้งาน',
