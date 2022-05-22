@@ -1,16 +1,27 @@
-# flutter_app_project_alert
+# ALERT Social Media App           > ALERT Social Media App
 
-A new Flutter project.
+This application help users stay informetion on the road.
 
-## Getting Started
+## Features
+- Custom photo feed<br>
+- Post photo posts from camera or gallery<br>
+  - Like posts<br>
+  - Comment on posts<br>
+    - View all comments on a post<br>
+- Deleting Posts<br>
+- See danger spots on the map<br>
+- Profile Pages<br>
+  - Change profile picture<br>
+  - Change username<br>
+  - Change image view from grid layout to feed layout<br>
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+![This is an image](/assets/screenshots/1.png)<br>
+![This is an image](/assets/screenshots/2.png)<br>
+![This is an image](/assets/screenshots/3.png)<br>
+![This is an image](/assets/screenshots/4.png)<br>
+![This is an image](/assets/screenshots/5.png)<br>
+![This is an image](/assets/screenshots/6.png)<br>
+![This is an image](/assets/screenshots/7.png)<br>
+![This is an image](/assets/screenshots/8.png)<br>
+![This is an image](/assets/screenshots/9.png)<br>
