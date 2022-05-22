@@ -1,4 +1,4 @@
-# ALERT Social Media App           > ALERT Social Media App
+# ALERT Social Media App           
 
 This application help users stay informetion on the road.
 
